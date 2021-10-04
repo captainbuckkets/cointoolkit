@@ -2156,16 +2156,17 @@ $(document).ready(function() {
 
 	$("#transactionBtn").click(function(){
 		var tx = coinjs.transaction();
+
+		if ($("#coinSelector").val() == "peercoin" || $("#coinSelector").val() == "peercoin_testnet") {
+			tx.version = 3;
+		}
+
 		var estimatedTxSize = 10; // <4:version><1:txInCount><1:txOutCount><4:nLockTime>
 
 		$("#transactionCreate, #transactionCreateStatus").addClass("hidden");
 
 		if(($("#nLockTime").val()).match(/^[0-9]+$/g)){
 			tx.lock_time = $("#nLockTime").val()*1;
-		}
-
-		if(($("#nTime").val()).match(/^[0-9]+$/g)){
-			tx.nTime = $("#nTime").val()*1;
 		}
 
 		$("#inputs .row").removeClass('has-error');
@@ -2585,23 +2586,10 @@ $(document).ready(function() {
 			coinjs.hdkey.pub =  $("#coinjs_hdpub").val()*1;
 			coinjs.hdkey.prv =  $("#coinjs_hdprv").val()*1;
 
-			coinjs.txExtraTimeField = ($("#coinjs_extratimefield").val() == "true");
-			if (coinjs.txExtraTimeField) {
-				$("#nTime").val(Date.now() / 1000 | 0);
-				$("#txTimeOptional").show();
-				$("#verifyTransactionData .txtime").show();
-			} else {
-				$("#txTimeOptional").hide();
-				$("#verifyTransactionData .txtime").hide();
-			}
+			$("#txTimeOptional").hide();
+			$("#verifyTransactionData .txtime").hide();
 			
-			coinjs.txExtraUnitField = ($("#coinjs_extraunitfieldvalue").val() !== "false");
-			if (coinjs.txExtraUnitField) {
-				coinjs.txExtraUnitFieldValue = $("#coinjs_extraunitfieldvalue").val()*1;
-				$("#verifyTransactionData .txunit").show();
-			} else {
-				$("#verifyTransactionData .txunit").hide();
-			}
+			$("#verifyTransactionData .txunit").hide();
 			
 			coinjs.decimalPlaces = $("#coinjs_decimalplaces").val()*1;
 
