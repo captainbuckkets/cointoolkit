@@ -20,7 +20,11 @@
 	coinjs.multisig = 0x05;
 	coinjs.hdkey = {'prv':0x0488ade4, 'pub':0x0488b21e};
 	coinjs.bech32 = {'charset':'qpzry9x8gf2tvdw0s3jn54khce6mua7l', 'version':0, 'hrp':'bc'};
-	
+	coinjs.txExtraTimeField = false;
+	coinjs.txExtraTimeFieldValue = false;
+	coinjs.txExtraUnitField = false;
+	coinjs.txExtraUnitFieldValue = false;
+
 	coinjs.decimalPlaces = 8;
 	coinjs.symbol = 'BTC';
 	
@@ -1141,7 +1145,11 @@
 		r.ins = [];
 		r.outs = [];
 		r.witness = false;
+		r.timestamp = null;
 		r.block = null;
+
+		r.nTime = 0;
+		r.nUnit = 0;
 
 		/* add an input to a transaction */
 		r.addinput = function(txid, index, script, sequence){
@@ -1408,6 +1416,11 @@
 
 			var zero = coinjs.numToBytes(0, 32);
 			var version = coinjs.numToBytes(parseInt(this.version), 4);
+
+			var timestamp = false;
+			if(this.nTime>0){
+				timestamp = coinjs.numToBytes(parseInt(this.nTime), 4);
+			}
 
 			var bufferTmp = [];
 			if(!(sigHashType >= 80)){	// not sighash anyonecanpay 
@@ -1966,6 +1979,12 @@
 			var buffer = [];
 			buffer = buffer.concat(coinjs.numToBytes(parseInt(this.version),4));
 
+			console.log(this)
+			if (coinjs.txExtraTimeField) {
+				console.log(coinjs.txExtraTimeField)
+				buffer = buffer.concat(coinjs.numToBytes(parseInt(this.nTime),4));
+			}
+
 			if(coinjs.isArray(this.witness)){
 				buffer = buffer.concat([0x00, 0x01]);
 			}
@@ -2002,6 +2021,10 @@
 			}
 
 			buffer = buffer.concat(coinjs.numToBytes(parseInt(this.lock_time),4));
+
+			if (coinjs.txExtraUnitField) {
+				buffer = buffer.concat(coinjs.numToBytes(parseInt(coinjs.txExtraUnitFieldValue),1));
+			}
 
 			return Crypto.util.bytesToHex(buffer);
 		}
@@ -2042,6 +2065,11 @@
 			var obj = new coinjs.transaction();
 
 			obj.version = readAsInt(4);
+
+			if (coinjs.txExtraTimeField) {
+				console.log(coinjs.txExtraTimeField, obj.version)
+				obj.nTime = readAsInt(4);
+			}
 
 			if(buffer[pos] == 0x00 && buffer[pos+1] == 0x01){
 				// segwit transaction
@@ -2086,6 +2114,10 @@
 			}
 
 			obj.lock_time = readAsInt(4);
+
+			if (coinjs.txExtraUnitField) {
+				obj.nUnit = readAsInt(1);
+			}
 
 			return obj;
 		}
