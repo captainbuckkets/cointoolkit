@@ -737,9 +737,7 @@ $(document).ready(function() {
 						console.log("raw inputs",inputs,"paths",paths,"outputs",outputsBuffer,"time",currenttransaction.nTime);
 
 						var timeStamp = undefined;
-						if (isPeercoin) {
-							timeStamp = currenttransaction.nTime;
-						}
+						if (isPeercoin){timeStamp = currenttransaction.nTime;}
 
 						// sort array
 
@@ -2157,8 +2155,6 @@ $(document).ready(function() {
 	$("#transactionBtn").click(function(){
 		var tx = coinjs.transaction();
 
-		console.log(tx)
-
 		if ($("#coinSelector").val() == "peercoin" || $("#coinSelector").val() == "peercoin_testnet") {
 			tx.version = 3;
 			tx.timestamp = null
@@ -2277,7 +2273,6 @@ $(document).ready(function() {
 		} else {
 			$("#transactionCreateStatus").removeClass("hidden").html("One or more input or output is invalid").fadeOut().fadeIn();
 		}
-		console.log(tx)
 	});
 
 	$("#inputs .txIdAmount").unbind("").change(function(){
