@@ -24,7 +24,6 @@
 	coinjs.txExtraTimeFieldValue = false;
 	coinjs.txExtraUnitField = false;
 	coinjs.txExtraUnitFieldValue = false;
-
 	coinjs.decimalPlaces = 8;
 	coinjs.symbol = 'BTC';
 	
@@ -1979,9 +1978,7 @@
 			var buffer = [];
 			buffer = buffer.concat(coinjs.numToBytes(parseInt(this.version),4));
 
-			console.log(this)
 			if (coinjs.txExtraTimeField) {
-				console.log(coinjs.txExtraTimeField)
 				buffer = buffer.concat(coinjs.numToBytes(parseInt(this.nTime),4));
 			}
 
@@ -2067,7 +2064,6 @@
 			obj.version = readAsInt(4);
 
 			if (coinjs.txExtraTimeField) {
-				console.log(coinjs.txExtraTimeField, obj.version)
 				obj.nTime = readAsInt(4);
 			}
 
@@ -2114,7 +2110,6 @@
 			}
 
 			obj.lock_time = readAsInt(4);
-
 			if (coinjs.txExtraUnitField) {
 				obj.nUnit = readAsInt(1);
 			}
